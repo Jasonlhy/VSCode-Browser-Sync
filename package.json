@@ -37,5 +37,9 @@
     },
     "dependencies": {
         "browser-sync": "^2.18.8"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Jasonlhy/VSCode-Browser-Sync"
     }
 }
