@@ -21,7 +21,7 @@ This extensions is stil a prototype in Beta version. But you can try its functio
 # How it works
 
 1. Once the command is typed, a `Node.js` server will be started, it handle request of the HTML file, and listen to the changes of files.
-2. The right panel is a static HTML page but looks like an embedded browser by containning an iframe with `src` point to the URL of the HTML file.
+2. The right panel is a static HTML page but it looks like an embedded browser by containing an iframe with `src` pointing to the URL of the HTML file.
 3. Once the file is saved, the server notifies the website embedded inside the iframe.
 
 # Enhancement
