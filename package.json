@@ -18,14 +18,7 @@
         "commands": [
             {
                 "command": "extension.browserSyncAtPanel",
-                "title": "Open browser sync at panel"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "eextension.browserSyncAtPanel",
-                "key": "ctrl+f1",
-                "mac": "cmd+f1"
+                "title": "Side Panel: browser sync"
             }
         ]
     },
