@@ -4,13 +4,13 @@ Integrate browser sync with VSCode to provide liveload
 
 # Requirement
 
-![Demo](img/side_browser_sync.gif)
-
 It calls a `Node.js` library [browser-sync](https://www.browsersync.io) as command line process so you need to install the `Node.js` runtime from [here](https://nodejs.org/)
 
-I have tested on `Node.js` v6.9.1 on Windows, and `v4.2.6` on Linux. It seems to work without problem.
+I have tested with `Node.js` v6.9.1 on Windows, and `v4.2.6` on Linux. It seems to work without problem.
 
 # Features
+
+![Demo](img/side_browser_sync.gif)
 
 This extensions is stil a prototype in Beta version. But you can try its function
 
@@ -20,7 +20,9 @@ This extensions is stil a prototype in Beta version. But you can try its functio
 
 # How it works
 
-[TODO]
+1. Once the command is typed, a `Node.js` server will be started, it handle request of the HTML file, and listen to the changes of files.
+2. The right panel is a static HTML page but looks like an embedded browser by containning an iframe with `src` point to the URL of the HTML file.
+3. Once the file is saved, the server notifies the website embedded inside the iframe.
 
 # Enhancement
 
