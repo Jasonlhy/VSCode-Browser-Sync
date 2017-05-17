@@ -4,7 +4,8 @@ Integrate browser sync with VSCode to provide liveload
 
 ## Features
 
-Type command on a HTML file: `Side Panel: browser sync`, right panel will open a web page with browser sync
+This extensions is stil a prototype in Beta version.
+But you can type command on a HTML file: `Side Panel: browser sync`, right panel will open a web page with browser sync
 
 # How it works
 

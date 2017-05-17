@@ -44,7 +44,7 @@ function startServer() {
     let bsPath = path.join(__dirname, '../../node_modules/browser-sync/bin/browser-sync.js');
     let cmdStr = `node ${bsPath} ${argsStr}`;
     let browserSync = child_process.exec(cmdStr, options);
-
+    
     browserSync.stdout.on('data', (data) => {
         console.log('StdOut' + data);
 
