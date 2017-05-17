@@ -32,7 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 function startServer() {
     let doc = vscode.window.activeTextEditor.document;
-    let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
+    // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
+    let cwd = path.dirname(doc.uri.fsPath);
 
     let argsStr = 'start --server --directory --files "*.html"';
     let options = {
