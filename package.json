@@ -3,7 +3,7 @@
     "displayName": "VSCode Browser Sync",
     "description": "Integrate browser sync with VSCode to provide liveload",
     "version": "0.0.1",
-    "publisher": "Jasonlhy",
+    "publisher": "jasonlhy",
     "engines": {
         "vscode": "^1.5.0"
     },
