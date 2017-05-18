@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as child_process from 'child_process';
 import * as browserSync from 'browser-sync'
-import * as portfinder from 'portfinder'
 
 import BrowserSyncContentProvider from './BrowserSyncContentProvider';
 const SCHEME_NAME: string = 'JasonBrowserSync';
@@ -29,8 +28,12 @@ export function activate(context: vscode.ExtensionContext) {
     const contentProvider = new BrowserSyncContentProvider();
     vscode.workspace.registerTextDocumentContentProvider(SCHEME_NAME, contentProvider);
 
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncServerAtPanel', startServer));
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncProxyAtPanel', startProxy));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncServerAtPanel', () => startServer(true)));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncServerInBrowser', () => startServer(false)));
+
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncProxyAtPanel', () => startProxy(true)));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncProxyInBrowser', () => startProxy(false)));
+
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.exitAll', exitAll));
 }
 
@@ -44,7 +47,7 @@ function openSidePanel(mode: string, port: number) {
         .then(s => console.log('done'), vscode.window.showErrorMessage);
 }
 
-async function startServer() {
+async function startServer(openAtPanel: Boolean) {
     let doc = vscode.window.activeTextEditor.document;
     let parentFolder = path.dirname(doc.uri.fsPath);
     let files = await getWatchFiles(doc);
@@ -53,33 +56,38 @@ async function startServer() {
     // Canont use relatie path to the cwd such as ["./*.html"]
     // It autodetect the free port for you
     let bs = browserSync.create();
-    bs.init(
-        {
-            open: false,
-            files: files,
-            server: {
-                baseDir: parentFolder,
-                directory: true
-            }
-        },
+    let config = {
+        files: files,
+        server: {
+            baseDir: parentFolder,
+            directory: true
+        }
+    };
+    if (openAtPanel) {
+        config['open'] = false;
+    }
+
+    bs.init(config,
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
             console.log("Estbalished server with port: " + port);
 
-            openSidePanel("server", port);
+            if (openAtPanel) {
+                openSidePanel("server", port);
+            }
             runningBS.push(bs);
         }
     );
 }
 
 // return the watching files in absolute path
-async function getWatchFiles(doc): Promise<[string]> {
+async function getWatchFiles(doc: vscode.TextDocument): Promise<[string]> {
     let cwd = null, files = null;
     if (vscode.workspace.rootPath) {
         let detectList = await vscode.window.showInputBox({
             placeHolder: "e.g. app/*.html|app/*.css",
-            prompt: "Enter relative path of files to root separated by | to enable folder level",
+            prompt: "Enter relative path of files to root folder separated by | to watch multiple locations",
         });
 
         if (detectList) {
@@ -99,22 +107,22 @@ async function getWatchFiles(doc): Promise<[string]> {
     return files.map(p => path.join(cwd, p));
 }
 
-async function getBaseURL() : Promise<string>{
+async function getBaseURL(): Promise<string> {
     let inputURL = await vscode.window.showInputBox({
         placeHolder: "e.g. http://localhost:3000/Home",
-        prompt: "Please enter the URL you want to reflect the change of this file",
+        prompt: "Please enter the URL you want to sync with the change of files",
     });
     console.log('inputURL: ' + inputURL);
 
     // only port number
-    if (inputURL && inputURL.match(/^\d+$/)){
+    if (inputURL && inputURL.match(/^\d+$/)) {
         inputURL = "http://localhost:" + inputURL;
     }
 
-    return inputURL;    
+    return inputURL;
 }
 
-async function startProxy() {
+async function startProxy(openAtPanel: Boolean) {
     let doc = vscode.window.activeTextEditor.document;
     let inputURL = await getBaseURL();
     let files = await getWatchFiles(doc);
@@ -123,18 +131,23 @@ async function startProxy() {
     // Canont use relatie path to the cwd such as ["./*.html"]
     // It autodetect the free port for you
     let bs = browserSync.create();
-    bs.init(
-        {
-            open: false,
-            proxy: inputURL,
-            files: files,
-        },
+    let config = {
+        proxy: inputURL,
+        files: files,
+    };
+    if (openAtPanel) {
+        config['open'] = false;
+    }
+
+    bs.init(config,
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
             console.log("estbalished proxy with port: " + port);
 
-            openSidePanel("proxy", port);
+            if (openAtPanel) {
+                openSidePanel("proxy", port);
+            }
             runningBS.push(bs);
         }
     );
