@@ -3,11 +3,13 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as child_process from 'child_process';
+import * as browserSync from 'browser-sync'
+import * as portfinder from 'portfinder'
 
 import BrowserSyncContentProvider from './BrowserSyncContentProvider';
 const SCHEME_NAME: string = 'JasonBrowserSync';
 
-function getBrowserSyncUri(uri: vscode.Uri, port: string) {
+function getBrowserSyncUri(uri: vscode.Uri, port: number) {
     if (uri.scheme === SCHEME_NAME) {
         return uri;
     }
@@ -15,7 +17,7 @@ function getBrowserSyncUri(uri: vscode.Uri, port: string) {
     return uri.with({
         scheme: SCHEME_NAME,
         path: uri.fsPath,
-        query: port
+        query: port.toString()
     });
 }
 
@@ -30,51 +32,48 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposablePreview);
 }
 
-function startServer() {
+function openSidePanel(port : number) {
+    const editor = vscode.window.activeTextEditor;
+    const doc = editor.document;
+    let uri = getBrowserSyncUri(doc.uri, port);
+
+    vscode.commands
+        .executeCommand('vscode.previewHtml', uri, vscode.ViewColumn.Two)
+        .then(s => console.log('done'), vscode.window.showErrorMessage);
+}
+
+function openServer(freePort : number) {
     let doc = vscode.window.activeTextEditor.document;
     // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
     let cwd = path.dirname(doc.uri.fsPath);
-    
-    // let argsStr = 'start --server --directory --files "*.html"';
-    let argsStr = 'start --no-open --server --directory --files "*.html"';
-    let options = {
-        "cwd": cwd
-    };
-    
-    let bsPath = path.join(__dirname, '../../node_modules/browser-sync/bin/browser-sync.js');
-    let cmdStr = `node ${bsPath} ${argsStr}`;
-    let browserSync = child_process.exec(cmdStr, options);
-    
-    browserSync.stdout.on('data', (data) => {
-        console.log('StdOut' + data);
+    let files = ["*.html"];
+    files = files.map(p => path.join(cwd, p))
 
-        // try to grep the port 
-        let result = data.toString().match(/Local: http:\/\/localhost:(\d+)/);
-        if (result){
-            let port: string = result[1];
-            console.log("parsed port: " + port);
-
-            const editor = vscode.window.activeTextEditor;
-            const doc = editor.document;
-            let uri = getBrowserSyncUri(doc.uri, port);
-
-            vscode.commands
-                .executeCommand('vscode.previewHtml', uri, vscode.ViewColumn.Two)
-                .then(s => console.log('done'), vscode.window.showErrorMessage);
+    let bs = browserSync.create();
+    bs.init(
+        {
+            // It must use absolute path, canont use relatie path to the cwd such as ["./*.html"],
+            open: false,
+            port: freePort,
+            files: files,
+            server: {
+                baseDir: cwd,
+                directory: true
+            }
+        },
+        function () {
+            // I find this method under the debugger not inside the documentation
+            let port : number = bs.getOption("port");
+            console.log("estbalished port: " + port);
+            openSidePanel(port);
         }
-    });
+    );
+}
 
-    browserSync.stderr.on('data', (data) => {
-        console.error('Error: ' + data);
-    });
-
-    browserSync.on('exit', (code) => {
-        if (code == 0) {
-            console.log("The server is closed");
-        } else {
-            console.log(`Child exited with code ${code}`);
-        }
-    });
+function startServer() {
+    portfinder.getPortPromise()
+        .then(openServer)
+        .catch(console.log);
 }
 
 // this method is called when your extension is deactivated

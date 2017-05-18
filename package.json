@@ -36,7 +36,8 @@
         "@types/mocha": "^2.2.32"
     },
     "dependencies": {
-        "browser-sync": "^2.18.8"
+        "browser-sync": "^2.18.8",
+        "portfinder" : "^1.0.13"
     },
     "repository": {
         "type": "git",
