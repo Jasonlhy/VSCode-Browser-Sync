@@ -11,18 +11,23 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.browserSyncAtPanel"
+        "onCommand:extension.browserSyncServerAtPanel",
+        "onCommand:extension.browserSyncProxyAtPanel"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.browserSyncAtPanel",
-                "title": "Browser Sync: Open at Side Panel"
+                "command": "extension.browserSyncServerAtPanel",
+                "title": "Browser Sync: Server mode"
             },
             {
-                "command": "extension.closeAllServer",
-                "title": "Browser Sync: Close All Server"
+                "command": "extension.browserSyncProxyAtPanel",
+                "title": "Browser Sync: Proxy mode"
+            },
+            {
+                "command": "extension.exitAll",
+                "title": "Browser Sync: Exit all"
             }
         ]
     },

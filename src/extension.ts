@@ -28,8 +28,9 @@ export function activate(context: vscode.ExtensionContext) {
     const contentProvider = new BrowserSyncContentProvider();
     vscode.workspace.registerTextDocumentContentProvider(SCHEME_NAME, contentProvider);
 
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncAtPanel', startServer));
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.closeAllServer', closeAllServer));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncServerAtPanel', startServer));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncProxyAtPanel', startProxy));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.exitAll', exitAll));
 }
 
 function openSidePanel(port: number) {
@@ -42,19 +43,20 @@ function openSidePanel(port: number) {
         .then(s => console.log('done'), vscode.window.showErrorMessage);
 }
 
-function openServer(freePort: number) {
+function startServer() {
     let doc = vscode.window.activeTextEditor.document;
     // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
     let cwd = path.dirname(doc.uri.fsPath);
     let files = ["*.html"];
     files = files.map(p => path.join(cwd, p))
 
+    // It must use absolute path
+    // Canont use relatie path to the cwd such as ["./*.html"]
+    // It autodetect the free port for you
     let bs = browserSync.create();
     bs.init(
         {
-            // It must use absolute path, canont use relatie path to the cwd such as ["./*.html"],
             open: false,
-            port: freePort,
             files: files,
             server: {
                 baseDir: cwd,
@@ -64,7 +66,7 @@ function openServer(freePort: number) {
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
-            console.log("estbalished port: " + port);
+            console.log("Estbalished server with port: " + port);
 
             openSidePanel(port);
             runningBS.push(bs);
@@ -72,23 +74,51 @@ function openServer(freePort: number) {
     );
 }
 
-function startServer() {
-    portfinder.getPortPromise()
-        .then(openServer)
-        .catch(console.log);
+async function startProxy() {
+    let inputURL = await vscode.window.showInputBox({
+        placeHolder: "e.g. http://localhost:3000/Home",
+        prompt: "Please enter the URL you want to reflect the change of this file",
+    });
+
+    console.log('inputURL: ' + inputURL);
+
+    let doc = vscode.window.activeTextEditor.document;
+    // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
+    let cwd = path.dirname(doc.uri.fsPath);
+    let files = ["*.cshtml"];
+    files = files.map(p => path.join(cwd, p))
+
+    // It must use absolute path
+    // Canont use relatie path to the cwd such as ["./*.html"]
+    // It autodetect the free port for you
+    let bs = browserSync.create();
+    bs.init(
+        {
+            open: false,
+            proxy: inputURL,
+            files: files,
+        },
+        function () {
+            // I find this method under the debugger not inside the documentation
+            let port: number = bs.getOption("port");
+            console.log("estbalished proxy with port: " + port);
+
+            runningBS.push(bs);
+        }
+    );
 }
 
-function closeAllServer() {
-    runningBS.forEach((bs) => 
+function exitAll() {
+    runningBS.forEach((bs) =>
         setTimeout(() => {
             let port: number = bs.getOption("port");
-            bs.exit();    
-            console.log("Browser Sync server with port: " + port + " is closed");
+            bs.exit();
+            console.log("Browser Sync server/proxy with port: " + port + " is closed");
         }, 3000)
     )
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-    closeAllServer();
+    exitAll();
 }
