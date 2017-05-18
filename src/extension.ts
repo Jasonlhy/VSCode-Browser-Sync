@@ -10,7 +10,7 @@ import BrowserSyncContentProvider from './BrowserSyncContentProvider';
 const SCHEME_NAME: string = 'JasonBrowserSync';
 let runningBS = [];
 
-function getBrowserSyncUri(uri: vscode.Uri, port: number) {
+function getBrowserSyncUri(uri: vscode.Uri, mode: string, port: number) {
     if (uri.scheme === SCHEME_NAME) {
         return uri;
     }
@@ -18,7 +18,8 @@ function getBrowserSyncUri(uri: vscode.Uri, port: number) {
     return uri.with({
         scheme: SCHEME_NAME,
         path: uri.fsPath,
-        query: port.toString()
+        query: port.toString(),
+        fragment: mode
     });
 }
 
@@ -33,10 +34,10 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.exitAll', exitAll));
 }
 
-function openSidePanel(port: number) {
+function openSidePanel(mode: string, port: number) {
     const editor = vscode.window.activeTextEditor;
     const doc = editor.document;
-    let uri = getBrowserSyncUri(doc.uri, port);
+    let uri = getBrowserSyncUri(doc.uri, mode, port);
 
     vscode.commands
         .executeCommand('vscode.previewHtml', uri, vscode.ViewColumn.Two)
@@ -68,7 +69,7 @@ function startServer() {
             let port: number = bs.getOption("port");
             console.log("Estbalished server with port: " + port);
 
-            openSidePanel(port);
+            openSidePanel("server", port);
             runningBS.push(bs);
         }
     );
@@ -79,13 +80,30 @@ async function startProxy() {
         placeHolder: "e.g. http://localhost:3000/Home",
         prompt: "Please enter the URL you want to reflect the change of this file",
     });
-
     console.log('inputURL: ' + inputURL);
 
     let doc = vscode.window.activeTextEditor.document;
     // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
-    let cwd = path.dirname(doc.uri.fsPath);
-    let files = ["*.cshtml"];
+    let cwd = null, files = null;
+    if (vscode.workspace.rootPath){
+        let detectList = await vscode.window.showInputBox({
+            placeHolder: "e.g. app/*.html|app/*.css",
+            prompt: "Enter relative path of files to root separated by | to enable folder level",
+        }); 
+
+        if (detectList){
+            cwd = vscode.workspace.rootPath;
+            files = detectList.split("|");
+        } else {
+            cwd = path.dirname(doc.uri.fsPath);
+            let thisType = "*" + path.extname(doc.uri.fsPath);
+            files = [thisType];
+        }
+    } else {
+        cwd = path.dirname(doc.uri.fsPath);
+        let thisType = "*" + path.extname(doc.uri.fsPath);
+        files = [thisType];
+    }
     files = files.map(p => path.join(cwd, p))
 
     // It must use absolute path
@@ -103,6 +121,7 @@ async function startProxy() {
             let port: number = bs.getOption("port");
             console.log("estbalished proxy with port: " + port);
 
+            openSidePanel("proxy", port);
             runningBS.push(bs);
         }
     );

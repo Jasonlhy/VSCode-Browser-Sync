@@ -9,8 +9,13 @@ export default class RefreshContentProvider implements vscode.TextDocumentConten
     provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): string {
         console.log('provideTextDocumentContent');
 
-        let fileName = path.basename(uri.fsPath);
-        let src = `http://localhost:${uri.query}/${fileName}`
+        let src = null;
+        if (uri.fragment === "server"){
+            let fileName = path.basename(uri.fsPath);
+            src = `http://localhost:${uri.query}/${fileName}`
+        } else {
+            src = `http://localhost:${uri.query}`
+        }
 
         return `
             <html>
