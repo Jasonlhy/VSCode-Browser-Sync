@@ -44,12 +44,10 @@ function openSidePanel(mode: string, port: number) {
         .then(s => console.log('done'), vscode.window.showErrorMessage);
 }
 
-function startServer() {
+async function startServer() {
     let doc = vscode.window.activeTextEditor.document;
-    // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
-    let cwd = path.dirname(doc.uri.fsPath);
-    let files = ["*.html"];
-    files = files.map(p => path.join(cwd, p))
+    let parentFolder = path.dirname(doc.uri.fsPath);
+    let files = await getWatchFiles(doc);
 
     // It must use absolute path
     // Canont use relatie path to the cwd such as ["./*.html"]
@@ -60,7 +58,7 @@ function startServer() {
             open: false,
             files: files,
             server: {
-                baseDir: cwd,
+                baseDir: parentFolder,
                 directory: true
             }
         },
@@ -75,23 +73,16 @@ function startServer() {
     );
 }
 
-async function startProxy() {
-    let inputURL = await vscode.window.showInputBox({
-        placeHolder: "e.g. http://localhost:3000/Home",
-        prompt: "Please enter the URL you want to reflect the change of this file",
-    });
-    console.log('inputURL: ' + inputURL);
-
-    let doc = vscode.window.activeTextEditor.document;
-    // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
+// return the watching files in absolute path
+async function getWatchFiles(doc): Promise<[string]> {
     let cwd = null, files = null;
-    if (vscode.workspace.rootPath){
+    if (vscode.workspace.rootPath) {
         let detectList = await vscode.window.showInputBox({
             placeHolder: "e.g. app/*.html|app/*.css",
             prompt: "Enter relative path of files to root separated by | to enable folder level",
-        }); 
+        });
 
-        if (detectList){
+        if (detectList) {
             cwd = vscode.workspace.rootPath;
             files = detectList.split("|");
         } else {
@@ -104,7 +95,29 @@ async function startProxy() {
         let thisType = "*" + path.extname(doc.uri.fsPath);
         files = [thisType];
     }
-    files = files.map(p => path.join(cwd, p))
+
+    return files.map(p => path.join(cwd, p));
+}
+
+async function getBaseURL() : Promise<string>{
+    let inputURL = await vscode.window.showInputBox({
+        placeHolder: "e.g. http://localhost:3000/Home",
+        prompt: "Please enter the URL you want to reflect the change of this file",
+    });
+    console.log('inputURL: ' + inputURL);
+
+    // only port number
+    if (inputURL && inputURL.match(/^\d+$/)){
+        inputURL = "http://localhost:" + inputURL;
+    }
+
+    return inputURL;    
+}
+
+async function startProxy() {
+    let doc = vscode.window.activeTextEditor.document;
+    let inputURL = await getBaseURL();
+    let files = await getWatchFiles(doc);
 
     // It must use absolute path
     // Canont use relatie path to the cwd such as ["./*.html"]
