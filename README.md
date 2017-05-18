@@ -7,7 +7,7 @@ Some of my friends ask me for similar requrest so I create this extension. It ai
 - Just *VSCode*
 - A web server supports proxy, [php -S seems to has some issues with localhost](https://github.com/BrowserSync/browser-sync/issues/335)
 
-It can run without installing [browser-sync](https://www.browsersync.io) and `Node.js` runtime becasues the extension containing the codes of **browser-sync** is running in a host extension node process.
+It can run without installing [browser-sync](https://www.browsersync.io) and `Node.js` runtime becasues the extension containing the codes of **browser-sync** is running on a separated extension host node process.
 
 # Features
 
