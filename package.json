@@ -18,7 +18,11 @@
         "commands": [
             {
                 "command": "extension.browserSyncAtPanel",
-                "title": "Side Panel: browser sync"
+                "title": "Browser Sync: Open at Side Panel"
+            },
+            {
+                "command": "extension.closeAllServer",
+                "title": "Browser Sync: Close All Server"
             }
         ]
     },

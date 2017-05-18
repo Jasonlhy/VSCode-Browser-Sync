@@ -8,6 +8,7 @@ import * as portfinder from 'portfinder'
 
 import BrowserSyncContentProvider from './BrowserSyncContentProvider';
 const SCHEME_NAME: string = 'JasonBrowserSync';
+let runningBS = [];
 
 function getBrowserSyncUri(uri: vscode.Uri, port: number) {
     if (uri.scheme === SCHEME_NAME) {
@@ -27,12 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
     const contentProvider = new BrowserSyncContentProvider();
     vscode.workspace.registerTextDocumentContentProvider(SCHEME_NAME, contentProvider);
 
-    let disposablePreview = vscode.commands.registerTextEditorCommand('extension.browserSyncAtPanel', startServer);
-
-    context.subscriptions.push(disposablePreview);
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncAtPanel', startServer));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.closeAllServer', closeAllServer));
 }
 
-function openSidePanel(port : number) {
+function openSidePanel(port: number) {
     const editor = vscode.window.activeTextEditor;
     const doc = editor.document;
     let uri = getBrowserSyncUri(doc.uri, port);
@@ -42,7 +42,7 @@ function openSidePanel(port : number) {
         .then(s => console.log('done'), vscode.window.showErrorMessage);
 }
 
-function openServer(freePort : number) {
+function openServer(freePort: number) {
     let doc = vscode.window.activeTextEditor.document;
     // let cwd = vscode.workspace.rootPath || path.dirname(doc.uri.fsPath);
     let cwd = path.dirname(doc.uri.fsPath);
@@ -63,9 +63,11 @@ function openServer(freePort : number) {
         },
         function () {
             // I find this method under the debugger not inside the documentation
-            let port : number = bs.getOption("port");
+            let port: number = bs.getOption("port");
             console.log("estbalished port: " + port);
+
             openSidePanel(port);
+            runningBS.push(bs);
         }
     );
 }
@@ -76,7 +78,17 @@ function startServer() {
         .catch(console.log);
 }
 
+function closeAllServer() {
+    runningBS.forEach((bs) => 
+        setTimeout(() => {
+            let port: number = bs.getOption("port");
+            bs.exit();    
+            console.log("Browser Sync server with port: " + port + " is closed");
+        }, 3000)
+    )
+}
+
 // this method is called when your extension is deactivated
 export function deactivate() {
-
+    closeAllServer();
 }
