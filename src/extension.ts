@@ -71,7 +71,9 @@ async function startServer(openAtPanel: Boolean) {
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
-            console.log("Estbalished server with port: " + port);
+            let msg = "Estbalished server with port: " + port
+            vscode.window.showInformationMessage(msg);
+            console.log(msg);
 
             if (openAtPanel) {
                 openSidePanel("server", port);
@@ -143,7 +145,9 @@ async function startProxy(openAtPanel: Boolean) {
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
-            console.log("estbalished proxy with port: " + port);
+            let msg = "Estbalished proxy with port: " + port;
+            console.log(msg);
+            vscode.window.showInformationMessage(msg);
 
             if (openAtPanel) {
                 openSidePanel("proxy", port);
@@ -153,17 +157,26 @@ async function startProxy(openAtPanel: Boolean) {
     );
 }
 
-function exitAll() {
-    runningBS.forEach((bs) =>
+function exitAll() : Promise<{}[]> {
+    let promises = runningBS.map((bs) => new Promise((resolve, reject) => {
         setTimeout(() => {
             let port: number = bs.getOption("port");
             bs.exit();
-            console.log("Browser Sync server/proxy with port: " + port + " is closed");
+
+            let msg = "Browser Sync server/proxy with port: " + port + " is closed";
+            console.log(msg);
+            resolve(msg);
         }, 3000)
-    )
+    }));
+
+    return Promise.all(promises);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
-    exitAll();
+// Extension must return a Promise from deactivate() 
+// if the cleanup process is asynchronous.
+// An extension may return undefined from deactivate()
+// if the cleanup runs synchronously.
+export function deactivate() : Promise<{}[]>{
+    return exitAll();
 }
