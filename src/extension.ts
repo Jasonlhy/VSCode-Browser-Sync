@@ -57,7 +57,7 @@ async function startServer(openAtPanel: Boolean) {
     // It autodetect the free port for you
     let bs = browserSync.create();
     let config = {
-        files: files,
+       files: files,
         server: {
             baseDir: parentFolder,
             directory: true
@@ -65,6 +65,12 @@ async function startServer(openAtPanel: Boolean) {
     };
     if (openAtPanel) {
         config['open'] = false;
+    } else {
+        let vscodeConfig = vscode.workspace.getConfiguration();
+        let browsers = vscodeConfig.get('browserSync.browser');
+        if (browsers){
+            config['browser'] = browsers;
+        }
     }
 
     bs.init(config,
@@ -139,6 +145,12 @@ async function startProxy(openAtPanel: Boolean) {
     };
     if (openAtPanel) {
         config['open'] = false;
+    } else {
+        let vscodeConfig = vscode.workspace.getConfiguration();
+        let browsers = vscodeConfig.get('browserSync.browser');
+        if (browsers){
+            config['browser'] = browsers;
+        }
     }
 
     bs.init(config,

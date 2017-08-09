@@ -39,7 +39,16 @@
                 "command": "extension.exitAll",
                 "title": "Browser Sync: Exit all"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "Browser Sync Configuration",
+            "properties": {
+                "browserSync.browser":{
+                    "type": ["array", "string"],
+                    "description": "Browser to be opened\nFor example: [\"chrome\", \"firefox\""
+                }
+            }            
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

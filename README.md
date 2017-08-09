@@ -63,6 +63,18 @@ The image below is a **Laravel** web application hosted on a docker machine, the
 2. Type in the URL of the original website, e.g. `http://localhost:8080`, or `8080`
 3. Type the path of files you want to watch relative to the root folder
 
+# Configuration
+
+** Open at different browser **
+ 
+Add following setting into user setting or workspace setting to open at different browser
+
+```json
+{
+    "browserSync.browser": ["chrome", "firefox"]
+}
+```
+
 # How it works
 
 ## Static HTML file
