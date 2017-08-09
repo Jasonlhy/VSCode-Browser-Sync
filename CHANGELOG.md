@@ -2,6 +2,9 @@
 
 All notable changes to the "vscode-browser-sync" extension will be documented in this file.
 
+## [1.1.0] - 2017-08-09
+- Add setting to allow to open at different browser
+
 ## [1.0.0] - 2017-05-19
 - Implements proxy, and open in browser, and basic folder feature
 
