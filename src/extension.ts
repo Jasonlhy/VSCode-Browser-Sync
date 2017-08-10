@@ -67,8 +67,8 @@ async function startServer(openAtPanel: Boolean) {
         config['open'] = false;
     } else {
         let vscodeConfig = vscode.workspace.getConfiguration();
-        let browsers = vscodeConfig.get('browserSync.browser');
-        if (browsers){
+        let browsers : Array<string> = vscodeConfig.get('browserSync.browser');
+        if (browsers && browsers.length > 0){
             config['browser'] = browsers;
         }
     }
@@ -147,8 +147,8 @@ async function startProxy(openAtPanel: Boolean) {
         config['open'] = false;
     } else {
         let vscodeConfig = vscode.workspace.getConfiguration();
-        let browsers = vscodeConfig.get('browserSync.browser');
-        if (browsers){
+        let browsers: Array<string> = vscodeConfig.get('browserSync.browser');
+        if (browsers && browsers.length > 0) {
             config['browser'] = browsers;
         }
     }

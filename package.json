@@ -45,7 +45,7 @@
             "properties": {
                 "browserSync.browser":{
                     "type": ["array", "string"],
-                    "description": "Browser to be opened\nFor example: [\"chrome\", \"firefox\""
+                    "description": "Browser to be opened, if it is empty, open at default browser\nFor example: [\"chrome\", \"firefox\""
                 }
             }            
         }
