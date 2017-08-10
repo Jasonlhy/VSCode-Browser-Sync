@@ -2,6 +2,9 @@
 
 All notable changes to the "vscode-browser-sync" extension will be documented in this file.
 
+## [1.1.1] - 2017-08-10
+- Fix critical bug that cannot open at browser.
+
 ## [1.1.0] - 2017-08-09
 - Add setting to allow to open at different browser
 
