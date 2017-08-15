@@ -43,9 +43,9 @@
         "configuration": {
             "title": "Browser Sync Configuration",
             "properties": {
-                "browserSync.browser":{
-                    "type": ["array", "string"],
-                    "description": "Browser to be opened, if it is empty, open at default browser\nFor example: [\"chrome\", \"firefox\""
+                "browserSync.config":{
+                    "type": "object",
+                    "description": "Browser Sync Configuration In JSON format\nPlease check: https://www.browsersync.io/docs/options"
                 }
             }            
         }

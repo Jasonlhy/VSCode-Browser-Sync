@@ -57,20 +57,18 @@ async function startServer(openAtPanel: Boolean) {
     // It autodetect the free port for you
     let bs = browserSync.create();
     let config = {
-       files: files,
+        files: files,
         server: {
             baseDir: parentFolder,
             directory: true
         }
     };
+    let bsConfig = vscode.workspace.getConfiguration().get('browserSync.config');
+    if (bsConfig && Object.keys(bsConfig)) {
+        Object.assign(config, bsConfig);
+    }
     if (openAtPanel) {
         config['open'] = false;
-    } else {
-        let vscodeConfig = vscode.workspace.getConfiguration();
-        let browsers : Array<string> = vscodeConfig.get('browserSync.browser');
-        if (browsers && browsers.length > 0){
-            config['browser'] = browsers;
-        }
     }
 
     bs.init(config,
@@ -143,14 +141,12 @@ async function startProxy(openAtPanel: Boolean) {
         proxy: inputURL,
         files: files,
     };
+    let bsConfig = vscode.workspace.getConfiguration().get('browserSync.config');
+    if (bsConfig && Object.keys(bsConfig)) {
+        Object.assign(config, bsConfig);
+    }
     if (openAtPanel) {
         config['open'] = false;
-    } else {
-        let vscodeConfig = vscode.workspace.getConfiguration();
-        let browsers: Array<string> = vscodeConfig.get('browserSync.browser');
-        if (browsers && browsers.length > 0) {
-            config['browser'] = browsers;
-        }
     }
 
     bs.init(config,
@@ -169,7 +165,7 @@ async function startProxy(openAtPanel: Boolean) {
     );
 }
 
-function exitAll() : Promise<{}[]> {
+function exitAll(): Promise<{}[]> {
     let promises = runningBS.map((bs) => new Promise((resolve, reject) => {
         setTimeout(() => {
             let port: number = bs.getOption("port");
@@ -189,6 +185,6 @@ function exitAll() : Promise<{}[]> {
 // if the cleanup process is asynchronous.
 // An extension may return undefined from deactivate()
 // if the cleanup runs synchronously.
-export function deactivate() : Promise<{}[]>{
+export function deactivate(): Promise<{}[]> {
     return exitAll();
 }
