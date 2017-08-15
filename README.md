@@ -65,13 +65,18 @@ The image below is a **Laravel** web application hosted on a docker machine, the
 
 # Configuration
 
-** Open at different browser **
- 
-Add following setting into user setting or workspace setting to open at different browser
+Add setting as JSON format into user setting or workspace setting to override default behaviour. The setting options come from [here](https://www.browsersync.io/docs/options), please use the option for Browser Sync version `2.18.13`
+
+Example setting:
+- Open in different browser: chrome and firefox
+- Without code sync.
+
+[Note from issue](https://github.com/Jasonlhy/VSCode-Browser-Sync/issues/1): Use "google chrome" under window, "chrome" under Mac
 
 ```json
-{
-    "browserSync.browser": ["chrome", "firefox"]
+"browserSync.config" : {
+   "browser" : ["chrome", "firefox"],
+   "codeSync" : false
 }
 ```
 
