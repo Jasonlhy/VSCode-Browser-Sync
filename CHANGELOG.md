@@ -2,6 +2,9 @@
 
 All notable changes to the "vscode-browser-sync" extension will be documented in this file.
 
+## [1.2.0] - 2017-08-15
+- [Breaking Change] Change the setting paramter into type of Object in order to support more user configuration.
+
 ## [1.1.1] - 2017-08-10
 - Fix critical bug that cannot open at browser.
 
