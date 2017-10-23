@@ -22,10 +22,11 @@ function getBrowserSyncUri(uri: vscode.Uri, mode: string, port: number) {
     });
 }
 
+let contentProvider: BrowserSyncContentProvider;
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "vscode-browser-sync" is now active!');
 
-    const contentProvider = new BrowserSyncContentProvider();
+    contentProvider = new BrowserSyncContentProvider();
     vscode.workspace.registerTextDocumentContentProvider(SCHEME_NAME, contentProvider);
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncServerAtPanel', () => startServer(true)));
@@ -35,6 +36,15 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncProxyInBrowser', () => startProxy(false)));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.exitAll', exitAll));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.refreshSidePanel', refreshSidePanel));
+}
+
+function refreshSidePanel(){
+    const editor = vscode.window.activeTextEditor;
+    const doc = editor.document;
+    let uri = getBrowserSyncUri(doc.uri, "server", 3000);
+
+    contentProvider.update(uri);
 }
 
 function openSidePanel(mode: string, port: number) {

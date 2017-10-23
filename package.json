@@ -36,6 +36,10 @@
                 "title": "Browser Sync: Proxy mode in browser"
             },
             {
+                "command": "extension.refreshSidePanel",
+                "title": "Browser Sync: Refresh Side Panel"
+            },
+            {
                 "command": "extension.exitAll",
                 "title": "Browser Sync: Exit all"
             }
