@@ -74,10 +74,8 @@ async function startServer(openAtPanel: Boolean) {
             directory: true
         }
     };
-    let bsConfig = vscode.workspace.getConfiguration().get('browserSync.config');
-    if (bsConfig && Object.keys(bsConfig)) {
-        Object.assign(config, bsConfig);
-    }
+    adjustConfigWithSetting(config);
+
     if (openAtPanel) {
         config['open'] = false;
     }
@@ -103,8 +101,9 @@ async function startServer(openAtPanel: Boolean) {
  * 
  * @param doc TextDocument of the active editor
  */
-async function getWatchFiles(doc: vscode.TextDocument): Promise<[string]> {
-    let cwd = null, files = null;
+async function getWatchFiles(doc: vscode.TextDocument): Promise<string[]> {
+    let cwd: string, files: string[];
+    
     if (vscode.workspace.rootPath) {
         let detectList = await vscode.window.showInputBox({
             placeHolder: "e.g. app/*.html|app/*.css",
@@ -126,6 +125,25 @@ async function getWatchFiles(doc: vscode.TextDocument): Promise<[string]> {
     }
 
     return files.map(p => path.join(cwd, p));
+}
+
+/**
+ * Adjust the cofiguration of browser sync with setting.
+ * @param config 
+ */
+export function adjustConfigWithSetting(config: {}){
+    console.log("hello");
+    let bsConfig: {} = vscode.workspace.getConfiguration().get('browserSync.config');
+    if (bsConfig && Object.keys(bsConfig)) {
+        Object.assign(config, bsConfig);
+
+        let useRelativePath = vscode.workspace.getConfiguration().get('browserSync.config.useRelativePath');
+        if (bsConfig["files"] && useRelativePath && Array.isArray(config["files"])) {
+            let cwd = vscode.workspace.rootPath;
+            let files: string[] = config["files"];
+            config["files"] = files.map(p => path.resolve(cwd, p));
+        }
+    }
 }
 
 async function getBaseURL(): Promise<string> {
@@ -156,10 +174,8 @@ async function startProxy(openAtPanel: Boolean) {
         proxy: inputURL,
         files: files,
     };
-    let bsConfig = vscode.workspace.getConfiguration().get('browserSync.config');
-    if (bsConfig && Object.keys(bsConfig)) {
-        Object.assign(config, bsConfig);
-    }
+    adjustConfigWithSetting(config);
+
     if (openAtPanel) {
         config['open'] = false;
     }

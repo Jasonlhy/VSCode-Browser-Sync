@@ -50,6 +50,10 @@
                 "browserSync.config": {
                     "type": "object",
                     "description": "Browser Sync Configuration In JSON format\nPlease check: https://www.browsersync.io/docs/options"
+                },
+                "browserSync.config.useRelativePath": {
+                    "type":"boolean",
+                    "description": "Use relative path if there is any file found in the directory"
                 }
             }
         }
