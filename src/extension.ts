@@ -36,15 +36,16 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncProxyInBrowser', () => startProxy(false)));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.exitAll', exitAll));
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.refreshSidePanel', refreshSidePanel));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncRefreshSidePanel', refreshSidePanel));
 }
 
-function refreshSidePanel(){
-    const editor = vscode.window.activeTextEditor;
-    const doc = editor.document;
-    let uri = getBrowserSyncUri(doc.uri, "server", 3000);
-
-    contentProvider.update(uri);
+function refreshSidePanel() {
+    // For most case, there will be only one side panel
+    for (const document of vscode.workspace.textDocuments) {
+        if (document.uri.scheme === SCHEME_NAME) {
+            contentProvider.update(document.uri);
+        }
+    }
 }
 
 function openSidePanel(mode: string, port: number) {
@@ -97,7 +98,11 @@ async function startServer(openAtPanel: Boolean) {
     );
 }
 
-// return the watching files in absolute path
+/**
+ * Return the watching files in absolute path
+ * 
+ * @param doc TextDocument of the active editor
+ */
 async function getWatchFiles(doc: vscode.TextDocument): Promise<[string]> {
     let cwd = null, files = null;
     if (vscode.workspace.rootPath) {

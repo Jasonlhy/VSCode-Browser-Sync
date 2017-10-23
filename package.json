@@ -36,7 +36,7 @@
                 "title": "Browser Sync: Proxy mode in browser"
             },
             {
-                "command": "extension.refreshSidePanel",
+                "command": "extension.browserSyncRefreshSidePanel",
                 "title": "Browser Sync: Refresh Side Panel"
             },
             {
@@ -47,11 +47,11 @@
         "configuration": {
             "title": "Browser Sync Configuration",
             "properties": {
-                "browserSync.config":{
+                "browserSync.config": {
                     "type": "object",
                     "description": "Browser Sync Configuration In JSON format\nPlease check: https://www.browsersync.io/docs/options"
                 }
-            }            
+            }
         }
     },
     "scripts": {
