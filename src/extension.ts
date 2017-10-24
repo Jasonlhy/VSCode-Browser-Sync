@@ -144,10 +144,7 @@ export function adjustConfigWithSetting(cwd: string, config: {}, bsConfig: {}, u
         if (bsConfig["files"] && useRelativePath) {
             if (Array.isArray(config["files"])) {
                 let files: string[] = config["files"];
-                config["files"] = files.map(p =>
-                    (path.isAbsolute(p) || path.win32.isAbsolute(p)) ?
-                        p :
-                        path.resolve(cwd, p)
+                config["files"] = files.map(p => path.resolve(cwd, p)
                 );
             } else {
                 let file: string = config["files"];

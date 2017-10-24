@@ -13,6 +13,8 @@ import * as myExtension from '../src/extension';
 import * as path from 'path';
 
 // Defines a Mocha test suite to group tests of similar kind together
+// Implementation of path depends on the system,
+// Unix test will be failed on Windows, Windows test will be failed at Unix
 suite("Extension Tests", () => {
 
     // Defines a Mocha unit test
@@ -93,11 +95,11 @@ suite("Extension Tests", () => {
         let bsConfig = {
             files: ["www/*.html", 
                     "www/*.css", 
-                    "C:\\Users\\Jason\\Desktop\\*.js"] // TODO: path.resolve("C:\\Users\\Jason\\Desktop", "C:\\Users\\Jason\\Desktop\\*.js") will fail?
+                    "C:\\Users\\Jason\\Desktop\\*.js"]
         }
 
-        var expected = ["C:\\Users\\Jason\\Desktop/www/*.html",
-            "C:\\Users\\Jason\\Desktop/www/*.css",
+        var expected = ["C:\\Users\\Jason\\Desktop\\www\\*.html",
+            "C:\\Users\\Jason\\Desktop\\www\\*.css",
             "C:\\Users\\Jason\\Desktop\\*.js"];
 
         myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
