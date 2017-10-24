@@ -63,6 +63,9 @@ The image below is a **Laravel** web application hosted on a docker machine, the
 2. Type in the URL of the original website, e.g. `http://localhost:8080`, or `8080`
 3. Type the path of files you want to watch relative to the root folder
 
+**Refresh Side Panel**
+Sometimes the page may crash and no `<body>` tag is returned, then the script of the browser sync cannot be injected and the codeSync will stop. In this situation, run command `Browser Sync: Refresh Side Panel` which acts like F5 in browser.
+
 # Configuration
 
 Add setting as JSON format into user setting or workspace setting to override default behaviour. The setting options come from [here](https://www.browsersync.io/docs/options), please use the option for Browser Sync version `2.18.13`
