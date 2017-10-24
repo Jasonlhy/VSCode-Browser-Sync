@@ -1,6 +1,6 @@
 # Objective
 
-Some of my friends ask me for similar requrest so I create this extension. It aims to integrate browser sync with VSCode to provide live preview of website
+Some of my friends ask me for similar requrest so I create this extension. It aims to integrate browser sync with VSCode to provide live preview of website.
 
 # Requirement
 
@@ -74,9 +74,11 @@ Add setting as JSON format into user setting or workspace setting to override de
 [Note from issue](https://github.com/Jasonlhy/VSCode-Browser-Sync/issues/1): Use "google chrome" under window, "chrome" under Mac
 
 ```json
-"browserSync.config" : {
-   "browser" : ["chrome", "firefox"],
-   "codeSync" : false
+{
+    "browserSync.config" : {
+        "browser" : ["chrome", "firefox"],
+        "codeSync" : false
+    }    
 }
 ```
 
