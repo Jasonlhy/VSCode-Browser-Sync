@@ -2,6 +2,10 @@
 
 All notable changes to the "vscode-browser-sync" extension will be documented in this file.
 
+## [1.3.0] - 2017-10-25
+- Support relative path of files to the workspace root in the setting
+- Add command `Browser Sync: Refresh Side Panel` to refresh the side panel
+
 ## [1.2.0] - 2017-08-15
 - [Breaking Change] Change the setting paramter into type of Object in order to support more user configuration.
 
