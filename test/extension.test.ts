@@ -24,7 +24,7 @@ suite("Extension Tests", () => {
             files: "*/html"
         };
 
-        myExtension.adjustConfigWithSetting(rootPath, config, undefined, undefined);
+        myExtension.adjustConfigWithSetting(rootPath, config, undefined);
         assert.equal(config["files"], "*/html");
     });
 
@@ -38,7 +38,7 @@ suite("Extension Tests", () => {
             files: "/Users/jason/Desktop"
         }
 
-        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, undefined);
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig);
         assert.equal(config["files"], "/Users/jason/Desktop");
     });
 
@@ -52,7 +52,7 @@ suite("Extension Tests", () => {
             files: "C:\\Users\\Jason\\Desktop\\Project\\*.html"
         }
 
-        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, undefined);
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig);
         assert.equal(config["files"], "C:\\Users\\Jason\\Desktop\\Project\\*.html");
     });
 
@@ -66,7 +66,7 @@ suite("Extension Tests", () => {
             files: "www/*.html"
         }
 
-        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig);
         assert.equal(config["files"], "/Users/jason/Desktop/www/*.html");
     });
 
@@ -80,7 +80,7 @@ suite("Extension Tests", () => {
             files: ["www/*.html", "www/*.css", "/Users/jason/*.js"]
         }
 
-        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig);
         assert.deepEqual(config["files"], ["/Users/jason/Desktop/www/*.html",
             "/Users/jason/Desktop/www/*.css",
             "/Users/jason/*.js"]);
@@ -102,7 +102,7 @@ suite("Extension Tests", () => {
             "C:\\Users\\Jason\\Desktop\\www\\*.css",
             "C:\\Users\\Jason\\Desktop\\*.js"];
 
-        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig);
         assert.deepEqual(config["files"], expected);
     });
 });

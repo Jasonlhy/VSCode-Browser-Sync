@@ -76,8 +76,7 @@ async function startServer(openAtPanel: Boolean) {
     };
     adjustConfigWithSetting(vscode.workspace.rootPath,
         config,
-        vscode.workspace.getConfiguration().get('browserSync.config'),
-        vscode.workspace.getConfiguration().get('browserSync.config.useRelativePath'));
+        vscode.workspace.getConfiguration().get('browserSync.config'));
 
     if (openAtPanel) {
         config['open'] = false;
@@ -134,14 +133,14 @@ async function getWatchFiles(doc: vscode.TextDocument): Promise<string[]> {
  * Adjust the cofiguration of browser sync with setting.
  * @param config 
  */
-export function adjustConfigWithSetting(cwd: string, config: {}, bsConfig: {}, useRelativePath) {
+export function adjustConfigWithSetting(cwd: string, config: {}, bsConfig: {}) {
     console.log("hello");
     // let bsConfig: {} = vscode.workspace.getConfiguration().get('browserSync.config');
     if (bsConfig && Object.keys(bsConfig)) {
         Object.assign(config, bsConfig);
 
         // let useRelativePath = vscode.workspace.getConfiguration().get('browserSync.config.useRelativePath');
-        if (bsConfig["files"] && useRelativePath) {
+        if (bsConfig["files"]) {
             if (Array.isArray(config["files"])) {
                 let files: string[] = config["files"];
                 config["files"] = files.map(p => path.resolve(cwd, p)
@@ -184,8 +183,7 @@ async function startProxy(openAtPanel: Boolean) {
     };
     adjustConfigWithSetting(vscode.workspace.rootPath,
         config,
-        vscode.workspace.getConfiguration().get('browserSync.config'),
-        vscode.workspace.getConfiguration().get('browserSync.config.useRelativePath'));
+        vscode.workspace.getConfiguration().get('browserSync.config'));
 
     if (openAtPanel) {
         config['open'] = false;

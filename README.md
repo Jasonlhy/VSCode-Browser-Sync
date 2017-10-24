@@ -67,7 +67,7 @@ The image below is a **Laravel** web application hosted on a docker machine, the
 
 Add setting as JSON format into user setting or workspace setting to override default behaviour. The setting options come from [here](https://www.browsersync.io/docs/options), please use the option for Browser Sync version `2.18.13`
 
-Example setting:
+## Example setting (different browser)
 - Open in different browser: chrome and firefox
 - Without code sync.
 
@@ -77,6 +77,18 @@ Example setting:
 "browserSync.config" : {
    "browser" : ["chrome", "firefox"],
    "codeSync" : false
+}
+```
+
+## Example setting (relative path)
+- Relative path of the watching files to the workspace root
+- Can mix with absolute path
+
+```json
+{
+    "browserSync.config": {
+        "files": ["*.html", "*.log", "C:\\Users\\jason\\Desktop\\db.txt"]
+    }
 }
 ```
 
