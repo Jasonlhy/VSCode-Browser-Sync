@@ -64,7 +64,10 @@ The image below is a **Laravel** web application hosted on a docker machine, the
 3. Type the path of files you want to watch relative to the root folder
 
 **Refresh Side Panel**
-Sometimes the page may crash and no `<body>` tag is returned, then the script of the browser sync cannot be injected and the codeSync will stop. In this situation, run command `Browser Sync: Refresh Side Panel` which acts like F5 in browser.
+
+Run command `Browser Sync: Refresh Side Panel` which acts like F5 in browser to refresh the side panel
+
+Sometimes the page may crash and no `<body>` tag is returned, then the script of the browser sync cannot be injected and the codeSync will stop. In this situation, 
 
 # Configuration
 
