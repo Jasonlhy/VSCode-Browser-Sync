@@ -10,13 +10,97 @@ import * as assert from 'assert';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 import * as myExtension from '../src/extension';
+import * as path from 'path';
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", () => {
 
     // Defines a Mocha unit test
-    test("Something 1", () => {
-        assert.equal(-1, [1, 2, 3].indexOf(5));
-        assert.equal(-1, [1, 2, 3].indexOf(0));
+    test("No config", () => {
+        const rootPath = "/";
+        let config = {
+            files: "*/html"
+        };
+
+        myExtension.adjustConfigWithSetting(rootPath, config, undefined, undefined);
+        assert.equal(config["files"], "*/html");
+    });
+
+    test("Setting override config file (Unix absolute Path)", () => {
+        const rootPath = "/";
+        let config = {
+            files: "*/html"
+        };
+
+        let bsConfig = {
+            files: "/Users/jason/Desktop"
+        }
+
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, undefined);
+        assert.equal(config["files"], "/Users/jason/Desktop");
+    });
+
+    test("Setting override config file (Window absolute Path)", () => {
+        const rootPath = "C:\\Users\\Jason\\Desktop";
+        let config = {
+            files: "*/html"
+        };
+
+        let bsConfig = {
+            files: "C:\\Users\\Jason\\Desktop\\Project\\*.html"
+        }
+
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, undefined);
+        assert.equal(config["files"], "C:\\Users\\Jason\\Desktop\\Project\\*.html");
+    });
+
+    test("Setting override config file (Unix relative Path)", () => {
+        const rootPath = "/Users/jason/Desktop";
+        let config = {
+            files: "*/html"
+        };
+
+        let bsConfig = {
+            files: "www/*.html"
+        }
+
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
+        assert.equal(config["files"], "/Users/jason/Desktop/www/*.html");
+    });
+
+    test("Setting override config files (Unix relative Path)", () => {
+        const rootPath = "/Users/jason/Desktop";
+        let config = {
+            files: ["*/html", "*.css"]
+        };
+
+        let bsConfig = {
+            files: ["www/*.html", "www/*.css", "/Users/jason/*.js"]
+        }
+
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
+        assert.deepEqual(config["files"], ["/Users/jason/Desktop/www/*.html",
+            "/Users/jason/Desktop/www/*.css",
+            "/Users/jason/*.js"]);
+    });
+    
+    test("Setting override config files (Window relative Path)", () => {
+        const rootPath = "C:\\Users\\Jason\\Desktop";
+        let config = {
+            files: ["*/html", "*.css"]
+        };
+
+        let bsConfig = {
+            files: ["www/*.html", 
+                    "www/*.css", 
+                    "C:\\Users\\Jason\\Desktop\\*.js"] // TODO: path.resolve("C:\\Users\\Jason\\Desktop", "C:\\Users\\Jason\\Desktop\\*.js") will fail?
+        }
+
+        var expected = ["C:\\Users\\Jason\\Desktop/www/*.html",
+            "C:\\Users\\Jason\\Desktop/www/*.css",
+            "C:\\Users\\Jason\\Desktop\\*.js"];
+
+        myExtension.adjustConfigWithSetting(rootPath, config, bsConfig, true);
+        assert.deepEqual(config["files"], expected);
     });
 });
