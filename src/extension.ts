@@ -39,8 +39,10 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('extension.browserSyncRefreshSidePanel', refreshSidePanel));
 }
 
-function refreshSidePanel() {
+async function refreshSidePanel() {
     // For most case, there will be only one side panel
+    await vscode.workspace.saveAll();
+
     for (const document of vscode.workspace.textDocuments) {
         if (document.uri.scheme === SCHEME_NAME) {
             contentProvider.update(document.uri);
