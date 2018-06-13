@@ -88,7 +88,7 @@ async function startServer(openAtPanel: Boolean) {
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
-            let msg = "Estbalished server with port: " + port
+            let msg = "Established server with port: " + port
             vscode.window.showInformationMessage(msg);
             console.log(msg);
 
