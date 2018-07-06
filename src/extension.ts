@@ -195,7 +195,7 @@ async function startProxy(openAtPanel: Boolean) {
         function () {
             // I find this method under the debugger not inside the documentation
             let port: number = bs.getOption("port");
-            let msg = "Estbalished proxy with port: " + port;
+            let msg = "Established proxy with port: " + port;
             console.log(msg);
             vscode.window.showInformationMessage(msg);
 
